@@ -36,24 +36,13 @@ export default class TextConversation {
    * Send a text message to this channel
    * @param message
    */
-  public sendMessage(
-    message: string,
-    tag: MessageType,
-    authorId: string,
-    receiverName: string,
-    receiverId: string,
-  ) {
+  public sendMessage(message: string) {
     const msg: ChatMessage = {
       sid: nanoid(),
       body: message,
-      receiverName,
-      receiverId,
-      type: tag,
-      authorName: this._authorName,
-      authorId,
+      author: this._authorName,
       dateCreated: new Date(),
     };
-    console.log(msg);
     this._socket.emit('chatMessage', msg);
   }
 
@@ -82,19 +71,8 @@ export default class TextConversation {
   }
 }
 type MessageCallback = (message: ChatMessage) => void;
-
-export enum MessageType {
-  GLOBAL_MESSAGE = 'GLOBAL',
-  GROUP_MESSAGE = 'GROUP',
-  DIRECT_MESSAGE = 'DIRECT',
-}
-
 export type ChatMessage = {
-  authorName: string;
-  authorId: string;
-  receiverName: string;
-  receiverId: string;
-  type: MessageType;
+  author: string;
   sid: string;
   body: string;
   dateCreated: Date;
