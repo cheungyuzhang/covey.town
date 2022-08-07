@@ -42,6 +42,7 @@ export default class TextConversation {
     authorId: string,
     receiverName: string,
     receiverId: string,
+    bodyType: MessageBodyType,
   ) {
     const msg: ChatMessage = {
       sid: nanoid(),
@@ -52,6 +53,7 @@ export default class TextConversation {
       authorName: this._authorName,
       authorId,
       dateCreated: new Date(),
+      bodyType,
     };
     console.log(msg);
     this._socket.emit('chatMessage', msg);
@@ -89,6 +91,13 @@ export enum MessageType {
   DIRECT_MESSAGE = 'DIRECT',
 }
 
+export enum MessageBodyType {
+  TEXT = 'TEXT',
+  URL = 'URL',
+  IMAGE = 'IMAGE',
+  FILE = 'FILE',
+}
+
 export type ChatMessage = {
   authorName: string;
   authorId: string;
@@ -97,5 +106,6 @@ export type ChatMessage = {
   type: MessageType;
   sid: string;
   body: string;
+  bodyType: MessageBodyType;
   dateCreated: Date;
 };
