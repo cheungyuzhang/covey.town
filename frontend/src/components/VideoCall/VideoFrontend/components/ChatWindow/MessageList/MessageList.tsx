@@ -2,10 +2,8 @@ import React from 'react';
 import { ChatMessage } from '../../../../../../classes/TextConversation';
 import MessageInfo from './MessageInfo/MessageInfo';
 import MessageListScrollContainer from './MessageListScrollContainer/MessageListScrollContainer';
-import TextMessage from './TextMessage/TextMessage';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
-import usePlayersInTown from '../../../../../../hooks/usePlayersInTown';
-import useCoveyAppState from '../../../../../../hooks/useCoveyAppState';
+import MessageItem from './MessageItem';
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -38,7 +36,7 @@ export default function MessageList({ messages }: MessageListProps) {
             {shouldDisplayMessageInfo && (
               <MessageInfo isLocalParticipant={isLocalParticipant} message={message} dateCreated={time} />
             )}
-            <TextMessage body={message.body} isLocalParticipant={isLocalParticipant} messageType={message.type} />
+            <MessageItem body={message.body} bodyType={message.bodyType} isLocalParticipant={isLocalParticipant} messageType={message.type}/>
           </React.Fragment>
         );
       })}

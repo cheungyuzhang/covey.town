@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, CircularProgress, Grid, makeStyles } from '@material-ui/core';
-import TextConversation, { ChatMessage, MessageType } from '../../../../../../classes/TextConversation';
+import { makeStyles } from '@material-ui/core';
+import TextConversation, { ChatMessage, MessageBodyType, MessageType } from '../../../../../../classes/TextConversation';
 import clsx from 'clsx';
 import FileAttachmentIcon from '../../../icons/FileAttachmentIcon';
 import { isMobile } from '../../../utils';
@@ -11,6 +11,12 @@ import useMaybeVideo from '../../../../../../hooks/useMaybeVideo';
 import usePlayersInTown from '../../../../../../hooks/usePlayersInTown';
 import SendingOptions from '../SendingOptions/SendingOptions';
 import useCoveyAppState from '../../../../../../hooks/useCoveyAppState';
+import { Box, Flex, Spacer, Button, Tooltip } from '@chakra-ui/react';
+import ImageUpload from '../ImageUpload/ImageUpload';
+import FileUpload from '../FileUpload/FileUpload';
+import TextInputToggleButton from './TextInputToggleButton';
+// import FileUpload from '../FileUpload/FileUpload';
+
 
 const useStyles = makeStyles(theme => ({
   chatInputContainer: {
@@ -85,6 +91,7 @@ export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputP
   const [receiverId, setReceiverId] = useState("")
   const [receiverName, setReceiverName] = useState("")
   const playerId = useCoveyAppState().myPlayerID
+  const [isInputUrl, setIsInputUrl] = useState(false)
 
   useEffect(() => {
     if (isTextareaFocused) {
@@ -115,27 +122,42 @@ export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputP
 
   const handleSendMessage = (message: string) => {
     if (isValidMessage) {
-      conversation.sendMessage(message.trim(), messageType, playerId, receiverName, receiverId);
+      message = message.trim()
+      conversation.sendMessage(message, messageType, playerId, receiverName, receiverId, 
+        isInputUrl ? MessageBodyType.URL : MessageBodyType.TEXT);
       setMessageBody('');
     }
   };
 
+  const handleFileMessage = (message: string, bodyType: MessageBodyType) => {
+    console.log(bodyType)
+      conversation.sendMessage(message, messageType, playerId, receiverName, receiverId, bodyType);
+      setMessageBody('');
+  }
+
   return (
     <div className={classes.chatInputContainer}>
-      <SendingOptions
-        messageType={messageType}
-        setMessageType={setMessageType}
-        receiverId={receiverId}
-        setReceiverId={setReceiverId}
-        setReceiverName={setReceiverName}
-      />
-      <Snackbar
-        open={Boolean(fileSendError)}
-        headline="Error"
-        message={fileSendError || ''}
-        variant="error"
-        handleClose={() => setFileSendError(null)}
-      />
+        <SendingOptions
+          messageType={messageType}
+          setMessageType={setMessageType}
+          receiverId={receiverId}
+          setReceiverId={setReceiverId}
+          setReceiverName={setReceiverName}
+        />
+        {/* <Snackbar
+          open={Boolean(fileSendError)}
+          headline="Error"
+          message={fileSendError || ''}
+          variant="error"
+          handleClose={() => setFileSendError(null)}
+        /> */}
+      <Flex>
+          <ImageUpload onChange={handleFileMessage}/> 
+        <Spacer/>
+          <FileUpload onChange={handleFileMessage}/> 
+        <Spacer/>
+          <TextInputToggleButton isInputUrl={isInputUrl} setIsInputUrl={setIsInputUrl} />
+      </Flex>
       <div className={clsx(classes.textAreaContainer, { [classes.isTextareaFocused]: isTextareaFocused })}>
         {/* 
         Here we add the "isTextareaFocused" class when the user is focused on the TextareaAutosize component.
@@ -147,7 +169,7 @@ export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputP
           maxRows={3}
           className={classes.textArea}
           aria-label="chat input"
-          placeholder="Write a message..."
+          placeholder={isInputUrl ? "Try a URL...(e.g. YouTube)" : "Write a message..."}
           onKeyPress={handleReturnKeyPress}
           onChange={handleChange}
           value={messageBody}
