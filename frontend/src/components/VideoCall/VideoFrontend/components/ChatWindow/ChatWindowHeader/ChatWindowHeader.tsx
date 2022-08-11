@@ -4,6 +4,7 @@ import CloseIcon from '../../../icons/CloseIcon';
 
 import useChatContext from '../../../hooks/useChatContext/useChatContext';
 import { Button, Stack } from '@chakra-ui/react';
+import AdvanceFilter from '../Filter/AdvanceFilter';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -51,6 +52,7 @@ export default function ChatWindowHeader() {
         <Button colorScheme='teal' variant={direct ? 'solid' : 'outline'} onClick={() => setDirect(!direct)}>
           Direct
         </Button>
+        <AdvanceFilter />
       </Stack>
     </>
 

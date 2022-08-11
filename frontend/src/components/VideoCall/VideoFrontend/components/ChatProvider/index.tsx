@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useRef, useState } from 'react';
 import TextConversation, { ChatMessage, MessageType } from '../../../../../classes/TextConversation';
 import useCoveyAppState from '../../../../../hooks/useCoveyAppState';
+import { advanceFilter } from '../ChatWindow/Filter/AdvanceFilter';
 
 type ChatContextType = {
   isChatWindowOpen: boolean;
@@ -14,6 +15,10 @@ type ChatContextType = {
   setGroup: (group: boolean) => void;
   direct: boolean;
   setDirect: (direct: boolean) => void;
+  filterByUsers: Set<string>;
+  setFilterByUsers: (users: Set<string>) => void;
+  filterByKeyword: string;
+  setFilterByKeyword: (keyword: string) => void;
 };
 
 export const ChatContext = createContext<ChatContextType>(null!);
@@ -29,6 +34,8 @@ export const ChatProvider: React.FC = ({ children }) => {
   const [group, setGroup] = useState(true)
   const [direct, setDirect] = useState(true)
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+  const [filterByUsers, setFilterByUsers] = useState(new Set<string>());
+  const [filterByKeyword, setFilterByKeyword] = useState('');
 
   useEffect(() => {
     if (conversation) {
@@ -48,11 +55,12 @@ export const ChatProvider: React.FC = ({ children }) => {
     console.log(totalMessages)
     console.log(messages)
     setMessages(totalMessages.filter(message =>
-      (message.type === MessageType.GLOBAL_MESSAGE && global) ||
+      ((message.type === MessageType.GLOBAL_MESSAGE && global) ||
       (message.type === MessageType.GROUP_MESSAGE && group) ||
-      (message.type === MessageType.DIRECT_MESSAGE && direct)
+      (message.type === MessageType.DIRECT_MESSAGE && direct)) &&
+      advanceFilter(message, filterByUsers, filterByKeyword)
     ))
-  }, [global, group, direct, totalMessages])
+  }, [global, group, direct, totalMessages, filterByUsers])
 
   useEffect(() => {
     // If the chat window is closed and there are new messages, set hasUnreadMessages to true
@@ -89,7 +97,11 @@ export const ChatProvider: React.FC = ({ children }) => {
         group,
         setGroup,
         direct,
-        setDirect
+        setDirect,
+        filterByUsers, 
+        setFilterByUsers,
+        filterByKeyword,
+        setFilterByKeyword
       }}>
       {children}
     </ChatContext.Provider>
