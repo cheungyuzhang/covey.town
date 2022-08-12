@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   Box,
@@ -16,7 +16,7 @@ import useCoveyAppState from '../../../../../../hooks/useCoveyAppState';
 import { MessageType } from '../../../../../../classes/TextConversation';
 import usePlayersInTown from '../../../../../../hooks/usePlayersInTown';
 import { CUIAutoComplete, Item } from 'chakra-ui-autocomplete';
-import useConversationAreas from '../../../../../../hooks/useConversationAreas';
+import useMyLocation from '../../../../../../hooks/useMyLocation';
 
 interface SendingOptionsProps {
   messageType: MessageType;
@@ -29,18 +29,23 @@ interface SendingOptionsProps {
 export default function SendingOptions({ messageType, setMessageType, receiverId, setReceiverId, setReceiverName }: SendingOptionsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const video = useMaybeVideo()
-  // should know if I am in a conversation area
   const players = usePlayersInTown()
   const { myPlayerID } = useCoveyAppState()
   const globalOption: Item = { value: MessageType.GLOBAL_MESSAGE, label: 'Global' }
   const groupOption: Item = { value: MessageType.GROUP_MESSAGE, label: 'Group' }
-  const [optionItems, setOptionItems] = useState([globalOption, groupOption])
+  const [optionItems, setOptionItems] = useState([globalOption])
   const [selectedItem, setSelectedItem] = useState(globalOption)
-  const conversationAreas = useConversationAreas()
-  // const [isInArea, setIsInArea] = useState(false)
+  const myLocation = useMyLocation();
+  const [hasGroup, setHasGroup] = useState(false);
 
   useEffect(() => {
-    const options: Item[] = [globalOption, groupOption]
+    if (myLocation.conversationLabel) setHasGroup(true);
+    else setHasGroup(false);
+  }, [myLocation])
+
+  useEffect(() => {
+    const options: Item[] = [globalOption]
+    if (hasGroup) options.push(groupOption);
     players.filter(player => player.id != myPlayerID).forEach(player => {
       options.push({ value: player.id, label: player.userName })
     })
@@ -51,23 +56,7 @@ export default function SendingOptions({ messageType, setMessageType, receiverId
       setReceiverName("")
       setSelectedItem(globalOption)
     }
-  }, [players])
-
-  // useEffect(() => {
-  //   const isInAnyArea = conversationAreas.some(area => area.occupants.includes(myPlayerID))
-  //   setIsInArea(isInAnyArea)
-  //   if (!isInAnyArea) {
-  //     setOptionItems(optionItems.filter(item => item != groupOption))
-  //     setMessageType(MessageType.GLOBAL_MESSAGE);
-  //     setReceiverId("")
-  //     setReceiverName("")
-  //     setSelectedItem(globalOption)
-  //   } else {
-  //     if (!optionItems.includes(groupOption)) {
-  //       setOptionItems([...optionItems, groupOption])
-  //     }
-  //   }
-  // }, [conversationAreas])
+  }, [players, hasGroup])
 
   const openSettings = useCallback(() => {
     onOpen();
@@ -95,42 +84,44 @@ export default function SendingOptions({ messageType, setMessageType, receiverId
     }
   }
 
-  return <>
-    <MenuItem data-testid='openMenuButton' onClick={openSettings}>
-      <Typography variant="body1">
-        {messageType === MessageType.GLOBAL_MESSAGE
-          ? 'To Town'
-          : messageType === MessageType.GROUP_MESSAGE
-            ? 'To Conversation Area'
-            : 'To ' + players.find(player => player.id === receiverId)?.userName
-        }
-      </Typography>
-    </MenuItem>
-    <Modal isOpen={isOpen} onClose={closeSettings}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Sending Settings</ModalHeader>
-        <ModalCloseButton />
-        <Box px={8} py={4}>
-          <CUIAutoComplete
-            label={'Current Option: ' + selectedItem.label}
-            placeholder='Search for a Sending Option'
-            items={optionItems}
-            disableCreateItem
-            tagStyleProps={{
-              display: "none"
-            }}
-            selectedItems={[selectedItem]}
-            onSelectedItemsChange={(change) => {
-              if (change.selectedItems && change.selectedItems[0] !== change.selectedItems[1]) {
-                setSelectedItem(change.selectedItems[1])
-                onChange(change.selectedItems[1])
-              }
-              closeSettings()
-            }}
-          />
-        </Box>
-      </ModalContent>
-    </Modal>
-  </>
+  return useMemo(() => {
+    return <>
+      <MenuItem data-testid='openMenuButton' onClick={openSettings}>
+        <Typography variant="body1">
+          {messageType === MessageType.GLOBAL_MESSAGE
+            ? 'To Town'
+            : messageType === MessageType.GROUP_MESSAGE
+              ? 'To Conversation Area'
+              : 'To ' + players.find(player => player.id === receiverId)?.userName
+          }
+        </Typography>
+      </MenuItem>
+      <Modal isOpen={isOpen} onClose={closeSettings}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Sending Settings</ModalHeader>
+          <ModalCloseButton />
+          <Box px={8} py={4}>
+            <CUIAutoComplete
+              label={'Current Option: ' + selectedItem.label}
+              placeholder='Search for a Sending Option'
+              items={optionItems}
+              disableCreateItem
+              tagStyleProps={{
+                display: "none"
+              }}
+              selectedItems={[selectedItem]}
+              onSelectedItemsChange={(change) => {
+                if (change.selectedItems && change.selectedItems[0] !== change.selectedItems[1]) {
+                  setSelectedItem(change.selectedItems[1])
+                  onChange(change.selectedItems[1])
+                }
+                closeSettings()
+              }}
+            />
+          </Box>
+        </ModalContent>
+      </Modal>
+    </>
+  }, [optionItems, isOpen])
 }
