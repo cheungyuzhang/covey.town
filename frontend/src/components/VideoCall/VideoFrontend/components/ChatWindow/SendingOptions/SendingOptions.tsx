@@ -50,7 +50,10 @@ export default function SendingOptions({ messageType, setMessageType, receiverId
       options.push({ value: player.id, label: player.userName })
     })
     setOptionItems(options)
-    if (receiverId && !options.some(option => option.value === receiverId)) {
+    if (
+      (receiverId && !options.some(option => option.value === receiverId)) ||
+      (messageType === MessageType.GROUP_MESSAGE && !hasGroup)
+    ) {
       setMessageType(MessageType.GLOBAL_MESSAGE);
       setReceiverId("")
       setReceiverName("")
