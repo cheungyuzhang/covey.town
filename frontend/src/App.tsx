@@ -35,6 +35,7 @@ import PlayerMovementContext, { PlayerMovementCallback } from './contexts/Player
 import PlayersInTownContext from './contexts/PlayersInTownContext';
 import VideoContext from './contexts/VideoContext';
 import { CoveyAppState } from './CoveyTypes';
+import MyLocationContext from './contexts/MyLocationContext';
 
 export const MOVEMENT_UPDATE_DELAY_MS = 0;
 export const CALCULATE_NEARBY_PLAYERS_MOVING_DELAY_MS = 300;
@@ -130,6 +131,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
   const [nearbyPlayers, setNearbyPlayers] = useState<Player[]>([]);
   // const [currentLocation, setCurrentLocation] = useState<UserLocation>({moving: false, rotation: 'front', x: 0, y: 0});
   const [conversationAreas, setConversationAreas] = useState<ConversationArea[]>([]);
+  const [myLocation, setMyLocation] = useState<UserLocation>({ moving: false, rotation: 'front', x: 0, y: 0 });
 
   const setupGameController = useCallback(
     async (initData: TownJoinResponse) => {
@@ -171,6 +173,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         currentLocation = location;
         if (now - lastMovement > MOVEMENT_UPDATE_DELAY_MS || !location.moving) {
           lastMovement = now;
+          setMyLocation({...location})
           socket.emit('playerMovement', location);
           if (
             now - lastRecalculateNearbyPlayers > CALCULATE_NEARBY_PLAYERS_MOVING_DELAY_MS ||
@@ -258,6 +261,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       setPlayersInTown,
       setNearbyPlayers,
       setConversationAreas,
+      setMyLocation,
     ],
   );
   const videoInstance = Video.instance();
@@ -294,7 +298,9 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
             <PlayersInTownContext.Provider value={playersInTown}>
               <NearbyPlayersContext.Provider value={nearbyPlayers}>
                 <ConversationAreasContext.Provider value={conversationAreas}>
-                  {page}
+                  <MyLocationContext.Provider value={myLocation}>
+                    {page}
+                  </MyLocationContext.Provider>
                 </ConversationAreasContext.Provider>
               </NearbyPlayersContext.Provider>
             </PlayersInTownContext.Provider>
