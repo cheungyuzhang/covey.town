@@ -4,11 +4,12 @@ import { render } from '@testing-library/react';
 import { mock } from 'jest-mock-extended';
 import React from 'react';
 import ConversationArea from '../../../../../../classes/ConversationArea';
-import Player from '../../../../../../classes/Player';
+import Player, { UserLocation } from '../../../../../../classes/Player';
 import { MessageType } from '../../../../../../classes/TextConversation';
 import { CoveyAppState } from '../../../../../../CoveyTypes';
 import * as useConversationAreas from '../../../../../../hooks/useConversationAreas';
 import * as useCoveyAppState from '../../../../../../hooks/useCoveyAppState';
+import * as useMyLocation from '../../../../../../hooks/useMyLocation';
 import * as usePlayersInTown from '../../../../../../hooks/usePlayersInTown';
 import SendingOptions from "./SendingOptions";
 
@@ -41,6 +42,7 @@ describe('SendingOptions', () => {
   let useConversationAreasSpy: jest.SpyInstance<ConversationArea[], []>;
   let usePlayersInTownSpy: jest.SpyInstance<Player[], []>;
   let useCoveyAppStateSpy: jest.SpyInstance<CoveyAppState, []>;
+  let useMyLocationSpy: jest.SpyInstance<UserLocation, []>;
 
   const wrappedSendingOptionsComponent = () => (
     <React.StrictMode>
@@ -59,6 +61,7 @@ describe('SendingOptions', () => {
     useConversationAreasSpy = jest.spyOn(useConversationAreas, 'default');
     usePlayersInTownSpy = jest.spyOn(usePlayersInTown, 'default');
     useCoveyAppStateSpy = jest.spyOn(useCoveyAppState, 'default');
+    useMyLocationSpy = jest.spyOn(useMyLocation, 'default');
   });
 
   afterAll(() => {
@@ -82,6 +85,7 @@ describe('SendingOptions', () => {
     setMessageType.mockRestore();
     setReceiverId.mockRestore();
     setReceiverName.mockRestore();
+    useMyLocationSpy.mockReturnValue({ moving: false, rotation: 'front', x: 0, y: 0 });
   });
 
   it('Displays a heading "Sending Settings', async () => {
