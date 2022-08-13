@@ -7,6 +7,7 @@ import FileAddOutlined from '@material-ui/icons/AttachFileOutlined'
 import { Button, Tooltip } from '@chakra-ui/react';
 import { makeStyles } from '@material-ui/core';
 import { MessageBodyType } from '../../../../../../classes/TextConversation';
+import { nanoid } from 'nanoid';
 
 const S3_BUCKET = process.env.REACT_APP_S3_BUCKET as string;
 const REGION = process.env.REACT_APP_REGION as string;
@@ -41,11 +42,12 @@ export default function FileUpload({ onChange }: UploadProps) {
     const handleFileInput = (files: FileList | null) => {
         if (files) {
             const file = files[0]
+            const randomFileName = nanoid() + file.name
             const params = {
                 ACL: 'public-read',
                 Body: file,
                 Bucket: S3_BUCKET,
-                Key: file.name
+                Key: randomFileName
             };
             myBucket.putObject(params)
                 .on('httpUploadProgress', (evt) => {
@@ -55,7 +57,7 @@ export default function FileUpload({ onChange }: UploadProps) {
                 .send((err, data) => {
                     if (err) console.log(err)
                     else {
-                        onChange(process.env.REACT_APP_FILE_PATH_PREFIX as string + file.name, MessageBodyType.FILE)
+                        onChange(process.env.REACT_APP_FILE_PATH_PREFIX as string + randomFileName, MessageBodyType.FILE)
                     }
                 })
         }
