@@ -4,6 +4,9 @@ interface ImageMessageProps {
     src: string;
 }
 
+/**
+ * Display an image message
+ */
 export default function ImageMessage({ src }: ImageMessageProps) {
 
     return (

@@ -26,6 +26,11 @@ interface SendingOptionsProps {
   setReceiverName: (playerName: string) => void;
 }
 
+/**
+ * Display a button that activate the modal of SendingOptions 
+ * where users can set up the receivers of messages, such as
+ * to global, to group, and to a specific player
+ */
 export default function SendingOptions({ messageType, setMessageType, receiverId, setReceiverId, setReceiverName }: SendingOptionsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const video = useMaybeVideo()

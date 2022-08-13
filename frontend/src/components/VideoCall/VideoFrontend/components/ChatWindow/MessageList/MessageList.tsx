@@ -12,6 +12,10 @@ interface MessageListProps {
 const getFormattedTime = (message?: ChatMessage) =>
   message?.dateCreated.toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric' }).toLowerCase();
 
+/**
+ * Show a list of messages with the author(if not the user) / the receivers
+ * and the time of the message
+ */
 export default function MessageList({ messages }: MessageListProps) {
   const { room } = useVideoContext();
   const localParticipant = room!.localParticipant;

@@ -3,8 +3,12 @@ import linkify from 'linkify-it';
 
 interface UrlMessageProps {
     src: string;
-  }
+}
 
+/**
+ * Display a url message, showing the preview information if possible
+ * Known best for YouTube, Google Map, etc.
+ */
 export default function UrlMessage({src}:UrlMessageProps) {
     const matches = linkify().test(src);
     if (!matches) 

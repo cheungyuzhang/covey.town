@@ -1,8 +1,8 @@
-//https://javascript.plainenglish.io/how-to-upload-files-to-aws-s3-in-react-591e533d615e
+// Reference:
+// https://javascript.plainenglish.io/how-to-upload-files-to-aws-s3-in-react-591e533d615e
 
 import React, { useState } from 'react';
 import AWS from 'aws-sdk'
-import assert from 'assert'
 import { AddPhotoAlternateOutlined } from '@material-ui/icons';
 import { Button, Tooltip } from '@chakra-ui/react';
 import { makeStyles } from '@material-ui/core';
@@ -31,14 +31,15 @@ interface UploadProps {
     onChange: (message: string, bodyType: MessageBodyType) => void;
 }
 
+/**
+ * Image uploader by storing image in S3 bucket
+ */
 export default function ImageUpload({ onChange }: UploadProps) {
     const classes = useStyles()
     const [progress, setProgress] = useState(0);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const handleFileInput = (files: FileList | null) => {
         if (files) {
-            // setSelectedFile(files[0]);
             const file = files[0]
             const params = {
                 ACL: 'public-read',
@@ -58,20 +59,18 @@ export default function ImageUpload({ onChange }: UploadProps) {
                     }
                 })
         }
-
     }
-
 
     return (
         <Tooltip label="Send an Image">
             <Button colorScheme='gray' variant='ghost'>
-            <label htmlFor="image-input">
-                <AddPhotoAlternateOutlined />
-            </label>
-            <input id="image-input" type="file"
-                onChange={(e) => { handleFileInput(e.target.files) }}
-                className={classes.fileInput} />
-        </Button>
+                <label htmlFor="image-input">
+                    <AddPhotoAlternateOutlined />
+                </label>
+                <input id="image-input" type="file"
+                    onChange={(e) => { handleFileInput(e.target.files) }}
+                    className={classes.fileInput} />
+            </Button>
         </Tooltip>
-        )
+    )
 }

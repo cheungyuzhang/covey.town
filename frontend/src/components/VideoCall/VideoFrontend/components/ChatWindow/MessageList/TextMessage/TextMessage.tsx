@@ -5,7 +5,9 @@ import linkify from 'linkify-it';
 interface TextMessageProps {
   text: string;
 }
-
+/**
+ * Display a text message, make the url-like text as a link
+ */
 export default function TextMessage({text}: TextMessageProps) {
   const matches = linkify().match(text);
   if (!matches) 

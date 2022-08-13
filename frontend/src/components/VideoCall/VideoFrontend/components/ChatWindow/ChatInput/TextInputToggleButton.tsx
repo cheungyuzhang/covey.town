@@ -7,6 +7,9 @@ interface TextInputToggleButtonProps {
     setIsInputUrl: (isInputUrl: boolean) => void,
 }
 
+/**
+ * This button allows users to choose if input a text ot a URL in the text input area
+ */
 function TextInputToggleButton({setIsInputUrl, isInputUrl}: TextInputToggleButtonProps) {
 
   return (
