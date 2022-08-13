@@ -1,12 +1,9 @@
-//https://javascript.plainenglish.io/how-to-upload-files-to-aws-s3-in-react-591e533d615e
+// Reference:
+// https://javascript.plainenglish.io/how-to-upload-files-to-aws-s3-in-react-591e533d615e
 
 import React, { useState } from 'react';
 import AWS from 'aws-sdk'
-import assert from 'assert'
-// import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-// import FileAddOutlined from '@ant-design/icons/FileAddOutlined'
 import FileAddOutlined from '@material-ui/icons/AttachFileOutlined'
-// import FileAddOutlined from '../../../icons/FileAttachmentIcon'
 import { Button, Tooltip } from '@chakra-ui/react';
 import { makeStyles } from '@material-ui/core';
 import { MessageBodyType } from '../../../../../../classes/TextConversation';
@@ -34,14 +31,15 @@ interface UploadProps {
     onChange: (message: string, bodyType: MessageBodyType) => void;
 }
 
+/**
+ * File uploader by storing files in S3 bucket
+ */
 export default function FileUpload({ onChange }: UploadProps) {
     const classes = useStyles()
     const [progress, setProgress] = useState(0);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const handleFileInput = (files: FileList | null) => {
         if (files) {
-            // setSelectedFile(files[0]);
             const file = files[0]
             const params = {
                 ACL: 'public-read',

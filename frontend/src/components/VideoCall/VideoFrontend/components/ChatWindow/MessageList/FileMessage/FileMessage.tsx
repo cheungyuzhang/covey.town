@@ -3,12 +3,14 @@ import { Link } from '@material-ui/core';
 import linkify from 'linkify-it';
 import FileOutlined from '@ant-design/icons/FileOutlined'
 
-// import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
-
 interface FileMessageProps {
   src: string;
 }
 
+/**
+ * Display a file message with a link that allows users
+ * to download the file
+ */
 export default function FileMessage({src}: FileMessageProps) {
     const matches = linkify().test(src);
     if (!matches) 

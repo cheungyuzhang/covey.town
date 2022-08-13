@@ -38,6 +38,11 @@ interface MessageItemProps {
   messageType: MessageType;
 }
 
+/**
+ * Show the message item according to sender and message type
+ * If the sender is the user, show it in right, otherwise left
+ * Different message types are painted with different colors
+ */
 export default function MessageItem({ body, bodyType, isLocalParticipant, messageType }: MessageItemProps) {
   const classes = useStyles();
 
@@ -45,7 +50,6 @@ export default function MessageItem({ body, bodyType, isLocalParticipant, messag
     <div className={clsx({ [classes.isAuthor]: isLocalParticipant })}>
       <div
         className={clsx(classes.messageContainer, {
-          // [classes.isLocalParticipant]: isLocalParticipant,
           [classes.globalMessage]: messageType === MessageType.GLOBAL_MESSAGE && !isLocalParticipant,
           [classes.toGlobalMessage]: messageType === MessageType.GLOBAL_MESSAGE && isLocalParticipant,
           [classes.groupMessage]: messageType === MessageType.GROUP_MESSAGE && !isLocalParticipant,
@@ -58,7 +62,8 @@ export default function MessageItem({ body, bodyType, isLocalParticipant, messag
             : bodyType === MessageBodyType.IMAGE ? <ImageMessage src={body}/> 
             : bodyType === MessageBodyType.URL ? <UrlMessage src={body}/>
             : bodyType === MessageBodyType.FILE ? <FileMessage src={body}/> 
-            : <div/>}
+            : <div/>
+        }
       </div>
     </div>
   );

@@ -2,21 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import TextConversation, { ChatMessage, MessageBodyType, MessageType } from '../../../../../../classes/TextConversation';
 import clsx from 'clsx';
-import FileAttachmentIcon from '../../../icons/FileAttachmentIcon';
 import { isMobile } from '../../../utils';
-import SendMessageIcon from '../../../icons/SendMessageIcon';
 import Snackbar from '../../Snackbar/Snackbar';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import useMaybeVideo from '../../../../../../hooks/useMaybeVideo';
-import usePlayersInTown from '../../../../../../hooks/usePlayersInTown';
 import SendingOptions from '../SendingOptions/SendingOptions';
 import useCoveyAppState from '../../../../../../hooks/useCoveyAppState';
-import { Box, Flex, Spacer, Button, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Spacer } from '@chakra-ui/react';
 import ImageUpload from '../ImageUpload/ImageUpload';
 import FileUpload from '../FileUpload/FileUpload';
 import TextInputToggleButton from './TextInputToggleButton';
-// import FileUpload from '../FileUpload/FileUpload';
-
 
 const useStyles = makeStyles(theme => ({
   chatInputContainer: {
