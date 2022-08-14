@@ -41,6 +41,80 @@ The backend will automatically restart if you change any of the files in the `se
 
 Create a `.env` file in the `frontend` directory, with the line: `REACT_APP_TOWNS_SERVICE_URL=http://localhost:8081` (if you deploy the towns service to another location, put that location here instead)
 
+### Configuring the S3 Bucket
+
+To send image/file messages, you will need an AWS account and its S3 bucket service. S3 bucket provides new accounts with 12 months credit and 5G storage memory, which is enough for us to get started.
+
+To configuring the S3 bucket service, you will need to configure the new bucket firstly:
+
+1. Go to [AWS](https://aws.amazon.com/) and create an account. You may register with your credit card and mail address.
+2. Create a S3 bucket with a bucket name and specified storage region. Record the name and region and add them in `.env` file as follows.
+3. Find the `Permissions` tab and then:
+  
+    3.1. Set `Permissions overview` to public.
+    
+    3.2. Uncheck `Block all public access`.
+    
+    3.3. Edit the `Bucket Policy` with the following code. Notice to replace `BUCKET_NAME` with your bucket name.
+
+    ```
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "PublicListGet",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": [
+                    "s3:List*",
+                    "s3:Get*"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::{BUCKET_NAME}",
+                    "arn:aws:s3:::{BUCKET_NAME}/*"
+                ]
+            }
+        ]
+    }
+    ```
+
+    3.4. Edit the `CORS policy` with the following code.
+
+    ```
+    [
+        {
+            "AllowedHeaders": [
+                "*"
+            ],
+            "AllowedMethods": [
+                "PUT",
+                "POST",
+                "DELETE",
+                "GET"
+            ],
+            "AllowedOrigins": [
+                "*"
+            ],
+            "ExposeHeaders": []
+        }
+    ]
+    ```
+4. Create an `Access Point`.
+
+5. Go to `Security Credentials` from the drop-down menu of your profile and find `Access keys (access key ID and secret access key)`. Create a new Access Key. Remember to memory the Access Key ID and its secret. Then add them in `.env` as follows.
+
+6. Get the file path prefix. In common, the format of the prefix is `https://{BUCKET_NAME}.s3.{REGION}.com/` if you do not create a folder in your bucket.
+
+7. Open the `.env` file in the `frontend` directory, setting the values as follows:
+
+| Config Value                  | Description                             |
+| ----------------------------- | --------------------------------------- |
+| `REACT_APP_S3_BUCKET`         | Visible on your S3 bucket dashboard.    |
+| `REACT_APP_REGION`            | The region of the bucket you specified. |
+| `REACT_APP_ACCESSKEY_ID`      | The Access Key ID you created.          |
+| `REACT_APP_SECRET_ACCESS_KEY` | The secret of Access Key ID.            |
+| `REACT_APP_FILE_PATH_PREFIX`  | The path prefix where files are stored. |
+
 ### Running the frontend
 
 In the `frontend` directory, run `npm start` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
