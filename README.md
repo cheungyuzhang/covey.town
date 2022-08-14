@@ -1,3 +1,16 @@
+# Covey.Town with Enhanced Chat Features
+
+Based on the original version, this fork adds necessary functions to the Chat sidebar. In the current iteration, we added:
+
+1. Direct messages
+2. Conversation Area messages
+3. Image/file sending
+4. Advanced Message filtering
+
+A [demo](https://voluble-creponne-519431.netlify.app/) was hosted on Heroku (backend) and Netlify (frontend). The build process is mostly the same as the original. But because we used an Amazon S3 instance as the image/file server, you need to follow the extra steps to set up the microservice to get these functions working.
+
+> Because Twilio charges us each connection to the backend by minutes, the current max participant number was set to 2.
+
 # Covey.Town
 
 Covey.Town provides a virtual meeting space where different groups of people can have simultaneous video calls, allowing participants to drift between different conversations, just like in real life.
@@ -119,3 +132,9 @@ To configuring the S3 bucket service, you will need to configure the new bucket 
 
 In the `frontend` directory, run `npm start` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
+
+## References
+
+- [AutoComplete Component](https://www.npmjs.com/package/chakra-ui-autocomplete)
+
+- [Upload Files to S3 Bucket](https://javascript.plainenglish.io/how-to-upload-files-to-aws-s3-in-react-591e533d615e)
