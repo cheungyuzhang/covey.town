@@ -14,12 +14,6 @@ export enum MessageType {
   DIRECT_MESSAGE = 'DIRECT',
 }
 
-// export const GLOBAL_MESSAGE = 'GLOBAL';
-// export const GROUP_MESSAGE = 'GROUP';
-// export const DIRECT_MESSAGE = 'DIRECT';
-
-// export type MessageType = GLOBAL_MESSAGE | 'group' | 'direct';
-
 export type ChatMessage = {
   authorName: string;
   authorId: string;

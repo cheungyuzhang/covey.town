@@ -232,6 +232,12 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
   };
 }
 
+/**
+ * An adapter for between Session's event interface (SessionListener)
+ * and the low-level network communication protocol, mainly for chat message
+ *
+ * @param socket the Socket object that we will use to communicate with the player
+ */
 function sessionSocketAdapter(socket: Socket): SessionListener {
   return {
     onChatMessage(message: ChatMessage){

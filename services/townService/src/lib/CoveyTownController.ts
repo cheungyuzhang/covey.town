@@ -250,11 +250,15 @@ export default class CoveyTownController {
     this._listeners = this._listeners.filter(v => v !== listener);
   }
 
+  /**
+   * Transfer message according to the receivers and type by calling session listeners.
+   * If the type is MessageType.GLOBAL_MESSAGE, send to all players
+   * If the type is MessageType.GROUP_MESSAGE, send to the group where the author is.
+   * If the type is MessageType.DIRECT_MESSAGE, send to the author and receiver.
+   * 
+   * @param message The chat message that is going to be transferred
+   */
   onChatMessage(message: ChatMessage): void {
-    // if global, send to all
-    // if group, send to the members in the same area currently
-    // if direct, send to the given users
-    // error message
     if (message.type === MessageType.GLOBAL_MESSAGE) {
       this._listeners.forEach(listener => listener.onChatMessage(message));
     } else if (message.type === MessageType.GROUP_MESSAGE) {

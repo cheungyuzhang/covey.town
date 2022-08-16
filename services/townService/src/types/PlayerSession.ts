@@ -13,6 +13,7 @@ export default class PlayerSession {
   /** The secret token that allows this client to access our Covey.Town service for this town * */
   private readonly _sessionToken: string;
 
+  /** The listener that allows the controller to transfer message with recognized identity */
   private _sessionListener?: SessionListener;
 
   /** The secret token that allows this client to access our video resources for this town * */
@@ -44,6 +45,12 @@ export default class PlayerSession {
     return this._sessionToken;
   }
 
+  /**
+   * Find session listener since this would be added after this class is created, it
+   * is possible that can not find this.
+   * 
+   * @returns A listener for session
+   */
   findSessionListener(): SessionListener | undefined {
     return this._sessionListener;
   }
